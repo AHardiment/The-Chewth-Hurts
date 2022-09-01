@@ -35,17 +35,32 @@ image.src = "./assets/theGoodKnightTileset.png";
 const foregroundImage = new Image();
 foregroundImage.src = "./assets/foregroundObjects.png";
 
-const playerImage = new Image();
-playerImage.src = "./assets/characters/playerDown.png";
+const playerDownImage = new Image();
+playerDownImage.src = "./assets/characters/playerDown.png";
+
+const playerUpImage = new Image();
+playerUpImage.src = "./assets/characters/playerUp.png";
+
+const playerLeftImage = new Image();
+playerLeftImage.src = "./assets/characters/playerLeft.png";
+
+const playerRightImage = new Image();
+playerRightImage.src = "./assets/characters/playerRight.png";
 
 const player = new Sprite({
   position: {
     x: width / 2 - 192 / 4 / 2,
     y: height / 2 - 68 / 2,
   },
-  image: playerImage,
+  image: playerDownImage,
   frames: {
     max: 4,
+  },
+  sprites: {
+    up: playerUpImage,
+    left: playerLeftImage,
+    down: playerDownImage,
+    right: playerRightImage,
   },
 });
 
@@ -102,8 +117,12 @@ const animate = () => {
 
   let isMoving = true;
 
+  player.moving = false;
+
   if (keys.w.isPressed) {
     for (let i = 0; i < boundaries.length; i++) {
+      player.moving = true;
+      player.image = player.sprites.up;
       const boundary = boundaries[i];
       if (
         isColliding({
@@ -130,6 +149,8 @@ const animate = () => {
   }
   if (keys.s.isPressed) {
     for (let i = 0; i < boundaries.length; i++) {
+      player.moving = true;
+      player.image = player.sprites.down;
       const boundary = boundaries[i];
       if (
         isColliding({
@@ -156,6 +177,8 @@ const animate = () => {
   }
   if (keys.a.isPressed) {
     for (let i = 0; i < boundaries.length; i++) {
+      player.moving = true;
+      player.image = player.sprites.left;
       const boundary = boundaries[i];
       if (
         isColliding({
@@ -182,6 +205,8 @@ const animate = () => {
   }
   if (keys.d.isPressed) {
     for (let i = 0; i < boundaries.length; i++) {
+      player.moving = true;
+      player.image = player.sprites.right;
       const boundary = boundaries[i];
       if (
         isColliding({
