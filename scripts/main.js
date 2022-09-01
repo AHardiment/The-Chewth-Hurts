@@ -47,6 +47,9 @@ playerLeftImage.src = "./assets/characters/playerLeft.png";
 const playerRightImage = new Image();
 playerRightImage.src = "./assets/characters/playerRight.png";
 
+const strengthPickupImage = new Image();
+strengthPickupImage.src = "./assets/pickups/strengthPickup.png";
+
 const player = new Sprite({
   position: {
     x: width / 2 - 192 / 4 / 2,
@@ -80,22 +83,15 @@ const foreground = new Sprite({
   image: foregroundImage,
 });
 
-const keys = {
-  w: {
-    isPressed: false,
+const strengthPickup = new Sprite({
+  position: {
+    x: Math.floor(Math.random() * width - 56),
+    y: Math.floor(Math.random() * height - 56),
   },
-  a: {
-    isPressed: false,
-  },
-  s: {
-    isPressed: false,
-  },
-  d: {
-    isPressed: false,
-  },
-};
+  image: strengthPickupImage,
+});
 
-const movables = [background, ...boundaries, foreground];
+const movables = [background, ...boundaries, foreground, strengthPickup];
 
 const isColliding = ({ rectangle1, rectangle2 }) => {
   return (
@@ -114,6 +110,9 @@ const animate = () => {
   });
   player.draw();
   foreground.draw();
+  for (let i = 0; i < 50; i++) {
+    strengthPickup.draw();
+  }
 
   let isMoving = true;
 
@@ -234,37 +233,3 @@ const animate = () => {
 };
 
 animate();
-
-window.addEventListener("keydown", (e) => {
-  switch (e.code) {
-    case "KeyW":
-      keys.w.isPressed = true;
-      break;
-    case "KeyA":
-      keys.a.isPressed = true;
-      break;
-    case "KeyS":
-      keys.s.isPressed = true;
-      break;
-    case "KeyD":
-      keys.d.isPressed = true;
-      break;
-  }
-});
-
-window.addEventListener("keyup", (e) => {
-  switch (e.code) {
-    case "KeyW":
-      keys.w.isPressed = false;
-      break;
-    case "KeyA":
-      keys.a.isPressed = false;
-      break;
-    case "KeyS":
-      keys.s.isPressed = false;
-      break;
-    case "KeyD":
-      keys.d.isPressed = false;
-      break;
-  }
-});

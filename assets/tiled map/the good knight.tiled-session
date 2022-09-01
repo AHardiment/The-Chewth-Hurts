@@ -13,16 +13,24 @@
         },
         "good knight tileset.tsx": {
             "dynamicWrapping": false
+        },
+        "theGoodKnightTileset.tmx": {
+            "scale": 3.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 331.7142857142857,
+                "y": 247.71428571428572
+            }
         }
     },
     "last.exportedFilePath": "/Users/alexhardiment/ironhack/projects/ironhack-project-game/assets",
-    "last.imagePath": "/Users/alexhardiment/ironhack/projects/ironhack-project-game/assets",
-    "map.height": 31,
+    "last.imagePath": "/Users/alexhardiment/ironhack/projects/ironhack-project-game/assets/pickups",
+    "map.height": 1,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 53,
+    "map.width": 1,
     "openFiles": [
     ],
     "project": "the good knight.tiled-project",
