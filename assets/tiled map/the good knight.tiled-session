@@ -15,8 +15,10 @@
             "dynamicWrapping": false
         }
     },
+    "last.exportedFilePath": "/Users/alexhardiment/ironhack/projects/ironhack-project-game/assets",
     "last.imagePath": "/Users/alexhardiment/ironhack/projects/ironhack-project-game/assets",
     "map.height": 31,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
