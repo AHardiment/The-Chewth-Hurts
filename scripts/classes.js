@@ -46,7 +46,8 @@ class Background {
 }
 
 class Foreground {
-  constructor({ position, velocity, image, frames = { max: 1 }, sprites }) {
+  constructor({ game, position, velocity, image, frames = { max: 1 }, sprites }) {
+    this.game = game;
     this.position = position;
     this.image = image;
     this.frames = { ...frames, val: 0, elapsed: 0 };
@@ -59,7 +60,7 @@ class Foreground {
   }
 
   draw() {
-    context.drawImage(
+    this.game.context.drawImage(
       this.image,
       this.frames.val * this.width,
       0,

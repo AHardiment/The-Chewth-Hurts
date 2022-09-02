@@ -9,9 +9,6 @@
 //   y: -1200,
 // };
 
-const strengthPickupImage = new Image();
-strengthPickupImage.src = "./assets/pickups/strengthPickup.png";
-
 // const foreground = new Sprite({
 //   position: {
 //     x: offset.x,

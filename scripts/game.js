@@ -18,11 +18,13 @@ class Game {
     foregroundImage.src = "./assets/foregroundObjects.png";
 
     this.collisionsMap = [];
+    
     for (let i = 0; i < collisions.length; i += 53) {
       this.collisionsMap.push(collisions.slice(i, 53 + i));
     }
 
     this.boundaries = [];
+
     this.collisionsMap.forEach((row, i) => {
       row.forEach((symbol, j) => {
         if (symbol === 1025)
@@ -83,14 +85,16 @@ class Game {
       },
     });
 
+    this.strengthPickups = [];
+
+    this.enableControls();
+
     this.movables = [
       this.background,
       ...this.boundaries,
       this.foreground,
-      this.strengthPickup,
+      ...this.strengthPickups,
     ];
-
-    this.enableControls();
 
     this.draw();
   }
@@ -151,6 +155,7 @@ class Game {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background.draw();
     this.player.draw();
+    this.foreground.draw();
   }
 
   update() {
@@ -158,6 +163,7 @@ class Game {
     this.boundaries.forEach((boundary) => {
       boundary.draw();
     });
+
     let isMoving = true;
 
     this.player.moving = false;
@@ -189,8 +195,7 @@ class Game {
           movable.position.y += 3;
         });
       }
-    }
-    if (keys.s.isPressed) {
+    } else if (keys.s.isPressed) {
       for (let i = 0; i < this.boundaries.length; i++) {
         this.player.moving = true;
         this.player.image = this.player.sprites.down;
@@ -217,8 +222,7 @@ class Game {
           movable.position.y -= 3;
         });
       }
-    }
-    if (keys.a.isPressed) {
+    } else if (keys.a.isPressed) {
       for (let i = 0; i < this.boundaries.length; i++) {
         this.player.moving = true;
         this.player.image = this.player.sprites.left;
@@ -245,8 +249,7 @@ class Game {
           movable.position.x += 3;
         });
       }
-    }
-    if (keys.d.isPressed) {
+    } else if (keys.d.isPressed) {
       for (let i = 0; i < this.boundaries.length; i++) {
         this.player.moving = true;
         this.player.image = this.player.sprites.right;
@@ -279,6 +282,6 @@ class Game {
   start() {
     this.interval = setInterval(() => {
       this.update();
-    }, 1000 / 60);
+    }, 1000 / 120);
   }
 }
