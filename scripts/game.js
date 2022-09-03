@@ -5,50 +5,6 @@ class Game {
 
     this.width = this.canvasElement.width;
     this.height = this.canvasElement.height;
-
-    const offset = {
-      x: -1095,
-      y: -1200,
-    };
-
-    const image = new Image();
-    image.src = "./assets/theGoodKnightTileset.png";
-
-    const foregroundImage = new Image();
-    foregroundImage.src = "./assets/foregroundObjects.png";
-
-    this.collisionsMap = [];
-    
-    for (let i = 0; i < collisions.length; i += 53) {
-      this.collisionsMap.push(collisions.slice(i, 53 + i));
-    }
-
-    this.boundaries = [];
-
-    this.collisionsMap.forEach((row, i) => {
-      row.forEach((symbol, j) => {
-        if (symbol === 1025)
-          this.boundaries.push(
-            new Boundary({
-              game: this,
-              position: {
-                x: j * Boundary.width + offset.x,
-                y: i * Boundary.height + offset.y,
-              },
-            })
-          );
-      });
-    });
-
-    this.isColliding = ({ rectangle1, rectangle2 }) => {
-      return (
-        rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
-        rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
-        rectangle1.position.y + rectangle1.height >= rectangle2.position.y &&
-        rectangle1.position.y <= rectangle2.position.y + rectangle2.height
-      );
-    };
-
     this.background = new Background({
       game: this,
       position: {
@@ -84,19 +40,6 @@ class Game {
         right: playerRightImage,
       },
     });
-
-    this.strengthPickups = [];
-
-    this.enableControls();
-
-    this.movables = [
-      this.background,
-      ...this.boundaries,
-      this.foreground,
-      ...this.strengthPickups,
-    ];
-
-    this.draw();
   }
 
   enableControls() {
@@ -151,6 +94,70 @@ class Game {
     });
   }
 
+  isColliding({ rectangle1, rectangle2 }) {
+    return (
+      rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+      rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+      rectangle1.position.y + rectangle1.height >= rectangle2.position.y &&
+      rectangle1.position.y <= rectangle2.position.y + rectangle2.height
+    );
+  }
+
+  generateBoundaries() {
+    this.collisionsMap = [];
+
+    for (let i = 0; i < collisions.length; i += 53) {
+      this.collisionsMap.push(collisions.slice(i, 53 + i));
+    }
+
+    this.boundaries = [];
+
+    this.collisionsMap.forEach((row, i) => {
+      row.forEach((symbol, j) => {
+        if (symbol === 1025)
+          this.boundaries.push(
+            new Boundary({
+              game: this,
+              position: {
+                x: j * Boundary.width + offset.x,
+                y: i * Boundary.height + offset.y,
+              },
+            })
+          );
+      });
+    });
+  }
+
+  runLogic() {
+    // the runLogic function should run in a loop (within the update() method)
+
+    this.movables = [
+      this.background,
+      ...this.boundaries,
+      this.foreground,
+      ...this.strengthPickups,
+    ];
+  }
+
+  generatePickups() {
+    for (let i = 0; i < 50; i++) {
+      this.generateSingleStrenghtPickup(i, i);
+    }
+    console.log(this.strengthPickups);
+  }
+
+  generateSingleStrenghtPickup(x, y) {
+    const pickup = new StrengthPickup({
+      game: this,
+      position: {
+        x: x,
+        y: y,
+      },
+      image: strengthPickupImage,
+    });
+    this.strengthPickups.push(pickup);
+  }
+
   draw() {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background.draw();
@@ -169,6 +176,7 @@ class Game {
     this.player.moving = false;
 
     if (keys.w.isPressed) {
+      //this should go in the draw/runLogic method of the player.js file
       for (let i = 0; i < this.boundaries.length; i++) {
         this.player.moving = true;
         this.player.image = this.player.sprites.up;
@@ -277,10 +285,24 @@ class Game {
         });
       }
     }
+    for (let i = 0; i < this.strengthPickups.length; i++) {
+      // console.log(i, this.strengthPickups[i]);
+      this.strengthPickups[i].draw();
+    }
   }
 
   start() {
+    this.strengthPickups = [];
+    this.generateBoundaries();
+    this.generatePickups();
+    // this.addStrengthPickups();
+    // console.log(this.strengthPickups);
+    this.runLogic();
+    this.enableControls();
+
+    //window.requestAnimationFrame(timestamp => this.update(timestamp))
     this.interval = setInterval(() => {
+      // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
   }

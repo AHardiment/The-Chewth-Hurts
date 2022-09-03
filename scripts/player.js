@@ -14,7 +14,6 @@ class Player {
   constructor({
     game,
     position,
-    velocity,
     image,
     frames = { max: 1 },
     sprites,

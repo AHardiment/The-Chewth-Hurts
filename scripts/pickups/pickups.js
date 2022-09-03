@@ -1,15 +1,5 @@
-const strengthPickupImage = new Image();
-strengthPickupImage.src = "./assets/pickups/strengthPickup.png";
-
-class StrengthPickup {
-  constructor({
-    game,
-    position,
-    velocity,
-    image,
-    frames = { max: 1 },
-    sprites,
-  }) {
+class Pickup {
+  constructor({ game, position, image, frames = { max: 1 }, sprites }) {
     this.game = game;
     this.position = position;
     this.image = image;
@@ -23,7 +13,16 @@ class StrengthPickup {
   }
 
   draw() {
-    this.game.context.drawImage(
+    this.game.context.save();
+    this.game.context.fillStyle = "rgba(255, 0, 0, 255)";
+    this.game.context.fillRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
+    this.game.context.restore();
+    /*  this.game.context.drawImage(
       this.image,
       this.frames.val * this.width,
       0,
@@ -33,17 +32,6 @@ class StrengthPickup {
       this.position.y,
       this.image.width / this.frames.max,
       this.image.height
-    );
-
-    if (!this.moving) return;
-
-    if (this.frames.max > 1) {
-      this.frames.elapsed++;
-    }
-
-    if (this.frames.elapsed % 20 === 0) {
-      if (this.frames.val < this.frames.max - 1) this.frames.val++;
-      else this.frames.val = 0;
-    }
+    ); */
   }
 }
