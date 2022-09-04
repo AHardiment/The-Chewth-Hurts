@@ -226,16 +226,19 @@ class Game {
   }
 
   drawAttributes() {
-    this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
-    this.context.fillRect(47, 10, 760, 45);
+    const attributesBoard = new Image();
+    attributesBoard.src = 'assets/attributesBoard.png';
+    this.context.drawImage(attributesBoard, 0, 0, 840, 480);
+    // this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+    // this.context.fillRect(47, 10, 760, 45);
     this.context.font = "36px serif";
-    this.context.fillStyle = "white";
-    this.context.shadowColor = "black";
-    this.context.shadowBlur = 1;
+    this.context.fillStyle = "black";
+    // this.context.shadowColor = "black";
+    // this.context.shadowBlur = 1;
     this.context.fillText(
       `     HEALTH: ${this.health} - DEFENSE: ${this.defense} - STRENGTH: ${this.strength}`,
-      10,
-      45,
+      5,
+      59,
       840
     );
   }
