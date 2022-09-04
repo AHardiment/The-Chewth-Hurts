@@ -137,7 +137,7 @@ class Game {
 
   generatePickups() {
     for (let i = 0; i < 25; i++) {
-      let x = Math.floor(Math.random() * 3001) - 1500;
+      let x = Math.floor(Math.random() * 2501) - 1250;
       let y = Math.random() * 350;
       this.generateSingleStrengthPickup(x, y);
       // this.generateSingleHealthPickup(x, y);
@@ -222,13 +222,22 @@ class Game {
     for (let pickup of this.defensePickups) {
       pickup.draw();
     }
-    this.drawStrength();
+    this.drawAttributes();
   }
 
-  drawStrength() {
-    this.context.font = "30px Arial";
-    this.context.fillStyle = "black";
-    this.context.fillText("Strength: " + this.strength, 10, 50);
+  drawAttributes() {
+    this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.context.fillRect(47, 10, 760, 45);
+    this.context.font = "36px serif";
+    this.context.fillStyle = "white";
+    this.context.shadowColor = "black";
+    this.context.shadowBlur = 1;
+    this.context.fillText(
+      `     HEALTH: ${this.health} - DEFENSE: ${this.defense} - STRENGTH: ${this.strength}`,
+      10,
+      45,
+      840
+    );
   }
 
   update() {

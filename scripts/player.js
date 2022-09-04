@@ -184,7 +184,7 @@ class Player {
         console.log("Picked up");
         this.game.strengthPickups.splice(i, 1);
         // this.game.player.strength += 1;}
-        this.game.strength += 1;
+        this.game.strength += 10;
       }
     }
     console.log(this.game.strength);
