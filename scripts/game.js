@@ -40,6 +40,9 @@ class Game {
         right: playerRightImage,
       },
     });
+    this.strengthPickups = [];
+    this.healthPickups = [];
+    this.defensePickups = [];
   }
 
   enableControls() {
@@ -128,6 +131,25 @@ class Game {
     });
   }
 
+  generatePickups() {
+    for (let i = 0; i < 100; i++) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      this.generateSingleStrengthPickup(x, y);
+      // this.generateSingleHealthPickup(x, y);
+    }
+    for (let i = 0; i < 100; i++) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      this.generateSingleHealthPickup(x, y);
+    }
+    for (let i = 0; i < 100; i++) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      this.generateSingleDefensePickup(x, y);
+    }
+  }
+
   runLogic() {
     // the runLogic function should run in a loop (within the update() method)
 
@@ -136,17 +158,12 @@ class Game {
       ...this.boundaries,
       this.foreground,
       ...this.strengthPickups,
+      ...this.healthPickups,
+      ...this.defensePickups,
     ];
   }
 
-  generatePickups() {
-    for (let i = 0; i < 50; i++) {
-      this.generateSingleStrenghtPickup(i, i);
-    }
-    console.log(this.strengthPickups);
-  }
-
-  generateSingleStrenghtPickup(x, y) {
+  generateSingleStrengthPickup(x, y) {
     const pickup = new StrengthPickup({
       game: this,
       position: {
@@ -158,14 +175,53 @@ class Game {
     this.strengthPickups.push(pickup);
   }
 
-  draw() {
+  generateSingleHealthPickup(x, y) {
+    const pickup = new HealthPickup({
+      game: this,
+      position: {
+        x: x,
+        y: y,
+      },
+      image: healthPickupImage,
+    });
+    this.healthPickups.push(pickup);
+  }
+
+  generateSingleDefensePickup(x, y) {
+    const pickup = new DefensePickup({
+      game: this,
+      position: {
+        x: x,
+        y: y,
+      },
+      image: defensePickupImage,
+    });
+    this.defensePickups.push(pickup);
+  }
+
+  clear() {
     this.context.clearRect(0, 0, this.width, this.height);
+  }
+
+  draw() {
     this.background.draw();
     this.player.draw();
     this.foreground.draw();
+    for (let pickup of this.strengthPickups) {
+      //console.log('HEY');
+      pickup.draw();
+    }
+    for (let pickup of this.healthPickups) {
+      //console.log('HEY');
+      pickup.draw();
+    }
+    for (let pickup of this.defensePickups) {
+      pickup.draw();
+    }
   }
 
   update() {
+    this.clear();
     this.draw();
     this.boundaries.forEach((boundary) => {
       boundary.draw();
@@ -285,25 +341,21 @@ class Game {
         });
       }
     }
-    for (let i = 0; i < this.strengthPickups.length; i++) {
-      // console.log(i, this.strengthPickups[i]);
-      this.strengthPickups[i].draw();
-    }
   }
 
   start() {
-    this.strengthPickups = [];
+    //this.strengthPickups = [];
     this.generateBoundaries();
     this.generatePickups();
     // this.addStrengthPickups();
     // console.log(this.strengthPickups);
     this.runLogic();
     this.enableControls();
-
-    //window.requestAnimationFrame(timestamp => this.update(timestamp))
     this.interval = setInterval(() => {
       // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
+
+    //window.requestAnimationFrame(timestamp => this.update(timestamp))
   }
 }
