@@ -43,6 +43,10 @@ class Game {
     this.strengthPickups = [];
     this.healthPickups = [];
     this.defensePickups = [];
+
+    this.strength = 0;
+    this.health = 100;
+    this.defense = 50;
   }
 
   enableControls() {
@@ -132,18 +136,18 @@ class Game {
   }
 
   generatePickups() {
-    for (let i = 0; i < 100; i++) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+    for (let i = 0; i < 25; i++) {
+      let x = Math.floor(Math.random() * 3001) - 1500;
+      let y = Math.random() * 350;
       this.generateSingleStrengthPickup(x, y);
       // this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleDefensePickup(x, y);
@@ -218,6 +222,13 @@ class Game {
     for (let pickup of this.defensePickups) {
       pickup.draw();
     }
+    this.drawStrength();
+  }
+
+  drawStrength() {
+    this.context.font = "30px Arial";
+    this.context.fillStyle = "black";
+    this.context.fillText("Strength: " + this.strength, 10, 50);
   }
 
   update() {
@@ -226,121 +237,8 @@ class Game {
     this.boundaries.forEach((boundary) => {
       boundary.draw();
     });
-
-    let isMoving = true;
-
-    this.player.moving = false;
-
-    if (keys.w.isPressed) {
-      //this should go in the draw/runLogic method of the player.js file
-      for (let i = 0; i < this.boundaries.length; i++) {
-        this.player.moving = true;
-        this.player.image = this.player.sprites.up;
-        const boundary = this.boundaries[i];
-        if (
-          this.isColliding({
-            rectangle1: this.player,
-            rectangle2: {
-              ...boundary,
-              position: {
-                x: boundary.position.x,
-                y: boundary.position.y + 3,
-              },
-            },
-          })
-        ) {
-          isMoving = false;
-          break;
-        }
-      }
-
-      if (isMoving) {
-        this.movables.forEach((movable) => {
-          movable.position.y += 3;
-        });
-      }
-    } else if (keys.s.isPressed) {
-      for (let i = 0; i < this.boundaries.length; i++) {
-        this.player.moving = true;
-        this.player.image = this.player.sprites.down;
-        const boundary = this.boundaries[i];
-        if (
-          this.isColliding({
-            rectangle1: this.player,
-            rectangle2: {
-              ...boundary,
-              position: {
-                x: boundary.position.x,
-                y: boundary.position.y - 3,
-              },
-            },
-          })
-        ) {
-          isMoving = false;
-          break;
-        }
-      }
-
-      if (isMoving) {
-        this.movables.forEach((movable) => {
-          movable.position.y -= 3;
-        });
-      }
-    } else if (keys.a.isPressed) {
-      for (let i = 0; i < this.boundaries.length; i++) {
-        this.player.moving = true;
-        this.player.image = this.player.sprites.left;
-        const boundary = this.boundaries[i];
-        if (
-          this.isColliding({
-            rectangle1: this.player,
-            rectangle2: {
-              ...boundary,
-              position: {
-                x: boundary.position.x + 3,
-                y: boundary.position.y,
-              },
-            },
-          })
-        ) {
-          isMoving = false;
-          break;
-        }
-      }
-
-      if (isMoving) {
-        this.movables.forEach((movable) => {
-          movable.position.x += 3;
-        });
-      }
-    } else if (keys.d.isPressed) {
-      for (let i = 0; i < this.boundaries.length; i++) {
-        this.player.moving = true;
-        this.player.image = this.player.sprites.right;
-        const boundary = this.boundaries[i];
-        if (
-          this.isColliding({
-            rectangle1: this.player,
-            rectangle2: {
-              ...boundary,
-              position: {
-                x: boundary.position.x - 3,
-                y: boundary.position.y,
-              },
-            },
-          })
-        ) {
-          isMoving = false;
-          break;
-        }
-      }
-
-      if (isMoving) {
-        this.movables.forEach((movable) => {
-          movable.position.x -= 3;
-        });
-      }
-    }
+    this.player.runLogic();
+    this.player.pickupStrengthPickup();
   }
 
   start() {

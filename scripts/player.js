@@ -11,13 +11,7 @@ const playerRightImage = new Image();
 playerRightImage.src = "./assets/characters/playerRight.png";
 
 class Player {
-  constructor({
-    game,
-    position,
-    image,
-    frames = { max: 1 },
-    sprites,
-  }) {
+  constructor({ game, position, image, frames = { max: 1 }, sprites }) {
     this.game = game;
     this.position = position;
     this.image = image;
@@ -53,5 +47,146 @@ class Player {
       if (this.frames.val < this.frames.max - 1) this.frames.val++;
       else this.frames.val = 0;
     }
+  }
+
+  runLogic() {
+    let isMoving = true;
+
+    this.game.player.moving = false;
+
+    if (keys.w.isPressed) {
+      //this should go in the draw/runLogic method of the player.js file
+      for (let i = 0; i < this.game.boundaries.length; i++) {
+        this.game.player.moving = true;
+        this.game.player.image = this.game.player.sprites.up;
+        const boundary = this.game.boundaries[i];
+        if (
+          this.game.isColliding({
+            rectangle1: this.game.player,
+            rectangle2: {
+              ...boundary,
+              position: {
+                x: boundary.position.x,
+                y: boundary.position.y + 3,
+              },
+            },
+          })
+        ) {
+          isMoving = false;
+          break;
+        }
+      }
+
+      if (isMoving) {
+        this.game.movables.forEach((movable) => {
+          movable.position.y += 3;
+        });
+      }
+    } else if (keys.s.isPressed) {
+      for (let i = 0; i < this.game.boundaries.length; i++) {
+        this.game.player.moving = true;
+        this.game.player.image = this.game.player.sprites.down;
+        const boundary = this.game.boundaries[i];
+        if (
+          this.game.isColliding({
+            rectangle1: this.game.player,
+            rectangle2: {
+              ...boundary,
+              position: {
+                x: boundary.position.x,
+                y: boundary.position.y - 3,
+              },
+            },
+          })
+        ) {
+          isMoving = false;
+          break;
+        }
+      }
+
+      if (isMoving) {
+        this.game.movables.forEach((movable) => {
+          movable.position.y -= 3;
+        });
+      }
+    } else if (keys.a.isPressed) {
+      for (let i = 0; i < this.game.boundaries.length; i++) {
+        this.game.player.moving = true;
+        this.game.player.image = this.game.player.sprites.left;
+        const boundary = this.game.boundaries[i];
+        if (
+          this.game.isColliding({
+            rectangle1: this.game.player,
+            rectangle2: {
+              ...boundary,
+              position: {
+                x: boundary.position.x + 3,
+                y: boundary.position.y,
+              },
+            },
+          })
+        ) {
+          isMoving = false;
+          break;
+        }
+      }
+
+      if (isMoving) {
+        this.game.movables.forEach((movable) => {
+          movable.position.x += 3;
+        });
+      }
+    } else if (keys.d.isPressed) {
+      for (let i = 0; i < this.game.boundaries.length; i++) {
+        this.game.player.moving = true;
+        this.game.player.image = this.game.player.sprites.right;
+        const boundary = this.game.boundaries[i];
+        if (
+          this.game.isColliding({
+            rectangle1: this.game.player,
+            rectangle2: {
+              ...boundary,
+              position: {
+                x: boundary.position.x - 3,
+                y: boundary.position.y,
+              },
+            },
+          })
+        ) {
+          isMoving = false;
+          break;
+        }
+      }
+
+      if (isMoving) {
+        this.game.movables.forEach((movable) => {
+          movable.position.x -= 3;
+        });
+      }
+    }
+  }
+
+  pickupStrengthPickup() {
+    for (let i = 0; i < this.game.strengthPickups.length; i++) {
+      const pickup = this.game.strengthPickups[i];
+      if (
+        this.game.isColliding({
+          rectangle1: this.game.player,
+          rectangle2: {
+            ...pickup,
+            position: {
+              x: pickup.position.x - 3,
+              y: pickup.position.y - 3,
+            },
+          },
+        })
+      ) {
+        console.log("Picked up");
+        this.game.strengthPickups.splice(i, 1);
+        // this.game.player.strength += 1;}
+        this.game.strength += 1;
+      }
+    }
+    console.log(this.game.strength);
   }
 }
