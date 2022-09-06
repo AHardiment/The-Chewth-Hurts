@@ -1,7 +1,7 @@
-const defensePickupImage = new Image();
-defensePickupImage.src = "./assets/pickups/defensePickup.png";
+const defencePickupImage = new Image();
+defencePickupImage.src = "./assets/pickups/defensePickup.png";
 
-class DefensePickup extends Pickup {
+class DefencePickup extends Pickup {
     constructor(game) {
         super(game);
     }

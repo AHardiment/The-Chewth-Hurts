@@ -166,7 +166,7 @@ class Player {
     }
   }
 
-  pickupStrengthPickup() {
+  pickupStrengthPickups() {
     for (let i = 0; i < this.game.strengthPickups.length; i++) {
       const pickup = this.game.strengthPickups[i];
       if (
@@ -184,9 +184,52 @@ class Player {
         console.log("Picked up");
         this.game.strengthPickups.splice(i, 1);
         // this.game.player.strength += 1;}
-        this.game.strength += 10;
+        this.game.strength += 5;
       }
     }
-    console.log(this.game.strength);
+  }
+  pickupDefencePickups() {
+    for (let i = 0; i < this.game.defencePickups.length; i++) {
+      const pickup = this.game.defencePickups[i];
+      if (
+        this.game.isColliding({
+          rectangle1: this.game.player,
+          rectangle2: {
+            ...pickup,
+            position: {
+              x: pickup.position.x - 3,
+              y: pickup.position.y - 3,
+            },
+          },
+        })
+      ) {
+        console.log("Picked up");
+        this.game.defencePickups.splice(i, 1);
+        // this.game.player.strength += 1;}
+        this.game.defence += 5;
+      }
+    }
+  }
+  pickupHealthPickups() {
+    for (let i = 0; i < this.game.healthPickups.length; i++) {
+      const pickup = this.game.healthPickups[i];
+      if (
+        this.game.isColliding({
+          rectangle1: this.game.player,
+          rectangle2: {
+            ...pickup,
+            position: {
+              x: pickup.position.x - 3,
+              y: pickup.position.y - 3,
+            },
+          },
+        })
+      ) {
+        console.log("Picked up");
+        this.game.healthPickups.splice(i, 1);
+        // this.game.player.strength += 1;}
+        this.game.health += 1;
+      }
+    }
   }
 }

@@ -9,6 +9,9 @@ image.src = "./assets/theGoodKnightTileset.png";
 const foregroundImage = new Image();
 foregroundImage.src = "./assets/foregroundObjects.png";
 
+const backgroundNightImage = new Image();
+backgroundNightImage.src = "./assets/theGoodKnightTilesetNight.png";
+
 class Background {
   constructor({
     game,

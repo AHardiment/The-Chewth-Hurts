@@ -5,21 +5,37 @@
     },
     "activeFile": "",
     "expandedProjectPaths": [
+        "."
     ],
     "exportAsImage.useCurrentScale": true,
     "fileStates": {
+        "Collision.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3.5
+        },
         "The Good Knight.tsx": {
-            "dynamicWrapping": true
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 3.5
         },
         "good knight tileset.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 3.5
+        },
+        "strengthPickup.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3.5
         },
         "theGoodKnightTileset.tmx": {
-            "scale": 3.5,
-            "selectedLayer": 1,
+            "expandedGroupLayers": [
+                8
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 331.7142857142857,
-                "y": 247.71428571428572
+                "x": 470,
+                "y": 310
             }
         }
     },
@@ -35,6 +51,11 @@
     ],
     "project": "the good knight.tiled-project",
     "recentFiles": [
+        "The Good Knight.tsx",
+        "good knight tileset.tsx",
+        "theGoodKnightTileset.tmx",
+        "Collision.tsx",
+        "strengthPickup.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

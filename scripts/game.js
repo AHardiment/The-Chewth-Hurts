@@ -23,6 +23,15 @@ class Game {
       image: foregroundImage,
     });
 
+    this.nightBackground = new Background({
+      game: this,
+      position: {
+        x: offset.x,
+        y: offset.y,
+      },
+      image: backgroundNightImage,
+    });
+
     this.player = new Player({
       game: this,
       position: {
@@ -42,11 +51,14 @@ class Game {
     });
     this.strengthPickups = [];
     this.healthPickups = [];
-    this.defensePickups = [];
+    this.defencePickups = [];
 
     this.strength = 0;
     this.health = 100;
-    this.defense = 50;
+    this.defence = 50;
+
+    this.dayCount = 5;
+    this.nightCount = 90;
   }
 
   enableControls() {
@@ -150,7 +162,7 @@ class Game {
     for (let i = 0; i < 1; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
-      this.generateSingleDefensePickup(x, y);
+      this.generateSingleDefencePickup(x, y);
     }
   }
 
@@ -161,9 +173,10 @@ class Game {
       this.background,
       ...this.boundaries,
       this.foreground,
+      this.nightBackground,
       ...this.strengthPickups,
       ...this.healthPickups,
-      ...this.defensePickups,
+      ...this.defencePickups,
     ];
   }
 
@@ -191,16 +204,16 @@ class Game {
     this.healthPickups.push(pickup);
   }
 
-  generateSingleDefensePickup(x, y) {
-    const pickup = new DefensePickup({
+  generateSingleDefencePickup(x, y) {
+    const pickup = new DefencePickup({
       game: this,
       position: {
         x: x,
         y: y,
       },
-      image: defensePickupImage,
+      image: defencePickupImage,
     });
-    this.defensePickups.push(pickup);
+    this.defencePickups.push(pickup);
   }
 
   clear() {
@@ -219,15 +232,21 @@ class Game {
       //console.log('HEY');
       pickup.draw();
     }
-    for (let pickup of this.defensePickups) {
+    for (let pickup of this.defencePickups) {
       pickup.draw();
     }
     this.drawAttributes();
+    console.log(this.dayCount);
+    if (this.dayCount === 0 || 30) {
+      this.background = this.nightBackground;
+      this.background.draw();
+      this.player.draw();
+    }
   }
 
   drawAttributes() {
     const attributesBoard = new Image();
-    attributesBoard.src = 'assets/attributesBoard.png';
+    attributesBoard.src = "assets/attributesBoard.png";
     this.context.drawImage(attributesBoard, 0, 0, 840, 480);
     // this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
     // this.context.fillRect(47, 10, 760, 45);
@@ -236,11 +255,39 @@ class Game {
     // this.context.shadowColor = "black";
     // this.context.shadowBlur = 1;
     this.context.fillText(
-      `     HEALTH: ${this.health} - DEFENSE: ${this.defense} - STRENGTH: ${this.strength}`,
+      `     HEALTH: ${this.health} - DEFENCE: ${this.defence} - STRENGTH: ${this.strength}`,
       5,
       59,
       840
     );
+  }
+
+  drawNightCountdown() {
+    this.context.font = "36px serif";
+    this.context.fillStyle = "black";
+    this.context.fillText(`${this.nightCount}`, 20, 400, 840);
+  }
+
+  drawDayCountdown() {
+    this.context.font = "36px serif";
+    this.context.fillStyle = "black";
+    this.context.fillText(`${this.dayCount}`, 20, 400, 840);
+  }
+
+  dayCountdown() {
+    if (this.dayCount !== 0) {
+      this.dayCount -= 1;
+    } else {
+      this.nightCount = 90;
+    }
+  }
+
+  nightCountdown() {
+    if (this.nightCount !== 0) {
+      this.nightCount -= 1;
+    } else {
+      this.dayCount = 30;
+    }
   }
 
   update() {
@@ -250,7 +297,16 @@ class Game {
       boundary.draw();
     });
     this.player.runLogic();
-    this.player.pickupStrengthPickup();
+    this.player.pickupStrengthPickups();
+    this.player.pickupHealthPickups();
+    this.player.pickupDefencePickups();
+    this.drawDayCountdown();
+    if (this.dayCount === 0) {
+      this.drawNightCountdown();
+      setInterval(() => {
+        this.nightCountdown();
+      }, 1000);
+    }
   }
 
   start() {
@@ -265,7 +321,9 @@ class Game {
       // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
-
+    setInterval(() => {
+      this.dayCountdown();
+    }, 1000);
     //window.requestAnimationFrame(timestamp => this.update(timestamp))
   }
 }
