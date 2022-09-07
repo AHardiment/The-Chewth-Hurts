@@ -59,6 +59,12 @@ class Game {
 
     this.dayCount = 5;
     this.nightCount = 90;
+
+    this.isRunning = false;
+
+    this.counter = 30;
+
+    this.canvasBackground = document.querySelector("canvas");
   }
 
   enableControls() {
@@ -148,18 +154,18 @@ class Game {
   }
 
   generatePickups() {
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 10; i++) {
       let x = Math.floor(Math.random() * 2501) - 1250;
       let y = Math.random() * 350;
       this.generateSingleStrengthPickup(x, y);
       // this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 10; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 10; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleDefencePickup(x, y);
@@ -235,9 +241,9 @@ class Game {
     for (let pickup of this.defencePickups) {
       pickup.draw();
     }
+    console.log(this.counter);
     this.drawAttributes();
-    console.log(this.dayCount);
-    if (this.dayCount === 0 || 30) {
+    if (this.counter === 0) {
       this.background = this.nightBackground;
       this.background.draw();
       this.player.draw();
@@ -271,7 +277,7 @@ class Game {
   drawDayCountdown() {
     this.context.font = "36px serif";
     this.context.fillStyle = "black";
-    this.context.fillText(`${this.dayCount}`, 20, 400, 840);
+    this.context.fillText(`${Math.floor(this.counter / 120)}`, 20, 400, 840);
   }
 
   dayCountdown() {
@@ -291,6 +297,7 @@ class Game {
   }
 
   update() {
+    this.counter--;
     this.clear();
     this.draw();
     this.boundaries.forEach((boundary) => {
@@ -301,15 +308,12 @@ class Game {
     this.player.pickupHealthPickups();
     this.player.pickupDefencePickups();
     this.drawDayCountdown();
-    if (this.dayCount === 0) {
-      this.drawNightCountdown();
-      setInterval(() => {
-        this.nightCountdown();
-      }, 1000);
-    }
+    // this.drawNightCountdown();
   }
 
   start() {
+    this.counter = 31 * 120;
+    this.isRunning = true;
     //this.strengthPickups = [];
     this.generateBoundaries();
     this.generatePickups();
@@ -321,9 +325,12 @@ class Game {
       // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
-    setInterval(() => {
-      this.dayCountdown();
-    }, 1000);
+    // setInterval(() => {
+    //   this.dayCountdown();
+    // }, 1000);
+    // setInterval(() => {
+    //   this.nightCountdown();
+    // }, 1000);
     //window.requestAnimationFrame(timestamp => this.update(timestamp))
   }
 }
