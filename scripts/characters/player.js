@@ -22,6 +22,11 @@ class Player {
     };
     this.moving = false;
     this.sprites = sprites;
+
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
   }
 
   draw() {
@@ -181,10 +186,11 @@ class Player {
           },
         })
       ) {
-        console.log("Picked up");
-        this.game.strengthPickups.splice(i, 1);
-        // this.game.player.strength += 1;}
-        this.game.strength += 5;
+        if (pickup.isActive) {
+          this.game.removeStrengthPickup(i);
+          // this.game.player.strength += 1;}
+          this.game.strength += 5;
+        }
       }
     }
   }
@@ -203,10 +209,11 @@ class Player {
           },
         })
       ) {
-        console.log("Picked up");
-        this.game.defencePickups.splice(i, 1);
-        // this.game.player.strength += 1;}
-        this.game.defence += 5;
+        if (pickup.isActive) {
+          this.game.removeDefencePickup(i);
+          // this.game.player.strength += 1;}
+          this.game.defence += 5;
+        }
       }
     }
   }
@@ -225,10 +232,35 @@ class Player {
           },
         })
       ) {
-        console.log("Picked up");
-        this.game.healthPickups.splice(i, 1);
-        // this.game.player.strength += 1;}
-        this.game.health += 1;
+        if (pickup.isActive) {
+          this.game.removeHealthPickup(i);
+          // this.game.player.strength += 1;}
+          this.game.health += 5;
+        }
+      }
+    }
+  }
+
+  attackEnemy() {
+    for (let i = 0; i < this.game.enemies.length; i++) {
+      const enemy = this.game.enemies[i];
+      if (
+        this.game.isColliding({
+          rectangle1: this.game.player,
+          rectangle2: {
+            ...enemy,
+            position: {
+              x: enemy.position.x - 3,
+              y: enemy.position.y - 3,
+            },
+          },
+        })
+      ) {
+        if (!enemy.isActive) {
+          this.game.removeEnemies(i);
+          this.game.enemyHealth -= 5;
+          console.log(this.game.enemyHealth);
+        }
       }
     }
   }

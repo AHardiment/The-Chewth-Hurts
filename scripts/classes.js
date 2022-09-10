@@ -13,13 +13,7 @@ const backgroundNightImage = new Image();
 backgroundNightImage.src = "./assets/theGoodKnightTilesetNight.png";
 
 class Background {
-  constructor({
-    game,
-    position,
-    image,
-    frames = { max: 1 },
-    sprites,
-  }) {
+  constructor({ game, position, image, frames = { max: 1 }, sprites }) {
     this.game = game;
     this.position = position;
     this.image = image;
@@ -30,6 +24,11 @@ class Background {
     };
     this.moving = false;
     this.sprites = sprites;
+
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
   }
 
   draw() {
@@ -48,13 +47,7 @@ class Background {
 }
 
 class Foreground {
-  constructor({
-    game,
-    position,
-    image,
-    frames = { max: 1 },
-    sprites,
-  }) {
+  constructor({ game, position, image, frames = { max: 1 }, sprites }) {
     this.game = game;
     this.position = position;
     this.image = image;
@@ -65,6 +58,11 @@ class Foreground {
     };
     this.moving = false;
     this.sprites = sprites;
+
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
   }
 
   draw() {
@@ -91,6 +89,11 @@ class Boundary {
     this.position = position;
     this.width = 56;
     this.height = 56;
+
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
   }
 
   draw() {

@@ -1,3 +1,5 @@
+const totalAmountOfPickups = 10;
+
 class Pickup {
   constructor({ game, position, image, frames = { max: 1 }, sprites }) {
     this.game = game;
@@ -5,6 +7,12 @@ class Pickup {
     this.image = image;
     this.width = 56;
     this.height = 56;
+    this.isActive = true;
+
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
   }
 
   draw() {

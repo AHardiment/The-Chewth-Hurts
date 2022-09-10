@@ -1,3 +1,8 @@
+const DayState = {
+  Day: 0,
+  Night: 1,
+};
+
 class Game {
   constructor() {
     this.canvasElement = document.querySelector("canvas");
@@ -5,13 +10,23 @@ class Game {
 
     this.width = this.canvasElement.width;
     this.height = this.canvasElement.height;
-    this.background = new Background({
+
+    this.dayBackground = new Background({
       game: this,
       position: {
         x: offset.x,
         y: offset.y,
       },
       image: image,
+    });
+
+    this.nightBackground = new Background({
+      game: this,
+      position: {
+        x: offset.x,
+        y: offset.y,
+      },
+      image: backgroundNightImage,
     });
 
     this.foreground = new Foreground({
@@ -23,14 +38,7 @@ class Game {
       image: foregroundImage,
     });
 
-    this.nightBackground = new Background({
-      game: this,
-      position: {
-        x: offset.x,
-        y: offset.y,
-      },
-      image: backgroundNightImage,
-    });
+    this.currentBackground = this.dayBackground;
 
     this.player = new Player({
       game: this,
@@ -49,22 +57,35 @@ class Game {
         right: playerRightImage,
       },
     });
+
     this.strengthPickups = [];
     this.healthPickups = [];
     this.defencePickups = [];
+
+    this.enemies = [];
 
     this.strength = 0;
     this.health = 100;
     this.defence = 50;
 
-    this.dayCount = 5;
-    this.nightCount = 90;
+    this.enemyHealth = 100;
+
+    this.dayTime = 3;
+    this.nightTime = 10;
 
     this.isRunning = false;
 
-    this.counter = 30;
+    this.dayState = DayState.Day;
+  }
 
-    this.canvasBackground = document.querySelector("canvas");
+  removeStrengthPickup(index) {
+    this.strengthPickups[index].isActive = false;
+  }
+  removeHealthPickup(index) {
+    this.healthPickups[index].isActive = false;
+  }
+  removeDefencePickup(index) {
+    this.defencePickups[index].isActive = false;
   }
 
   enableControls() {
@@ -86,7 +107,6 @@ class Game {
     window.addEventListener("keydown", (e) => {
       switch (e.code) {
         case "KeyW":
-          console.log("w");
           keys.w.isPressed = true;
           break;
         case "KeyA":
@@ -153,22 +173,56 @@ class Game {
     });
   }
 
+  randomisePickupPositions() {
+    for (let pickup of this.strengthPickups) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      pickup.position.x = x;
+      pickup.position.y = y;
+    }
+    for (let pickup of this.healthPickups) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      pickup.position.x = x;
+      pickup.position.y = y;
+    }
+    for (let pickup of this.defencePickups) {
+      let x = Math.random() * 840;
+      let y = Math.random() * 480;
+      pickup.position.x = x;
+      pickup.position.y = y;
+    }
+  }
+
   generatePickups() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < totalAmountOfPickups; i++) {
       let x = Math.floor(Math.random() * 2501) - 1250;
       let y = Math.random() * 350;
       this.generateSingleStrengthPickup(x, y);
-      // this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < totalAmountOfPickups; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleHealthPickup(x, y);
     }
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < totalAmountOfPickups; i++) {
       let x = Math.random() * 840;
       let y = Math.random() * 480;
       this.generateSingleDefencePickup(x, y);
+    }
+  }
+
+  removeEnemies() {
+    for (let i = 0; i < totalAmountOfEnemies; i++) {
+      delete this.enemies[i];
+      this.movables.splice(4 + i, 1);
+    }
+  }
+
+  removePickups() {
+    for (let i = 0; i < totalAmountOfPickups; i++) {
+      delete this.strengthPickups[i];
+      this.movables.splice(3 + i, 1);
     }
   }
 
@@ -176,13 +230,12 @@ class Game {
     // the runLogic function should run in a loop (within the update() method)
 
     this.movables = [
-      this.background,
-      ...this.boundaries,
-      this.foreground,
-      this.nightBackground,
-      ...this.strengthPickups,
-      ...this.healthPickups,
-      ...this.defencePickups,
+      ...this.boundaries, // 0
+      this.currentBackground, // 1
+      this.nightBackground, // 2
+      // ...this.strengthPickups, // 3
+      // ...this.healthPickups,
+      // ...this.defencePickups,
     ];
   }
 
@@ -196,6 +249,8 @@ class Game {
       image: strengthPickupImage,
     });
     this.strengthPickups.push(pickup);
+    this.movables.push(pickup);
+    pickup.isActive = true;
   }
 
   generateSingleHealthPickup(x, y) {
@@ -208,6 +263,7 @@ class Game {
       image: healthPickupImage,
     });
     this.healthPickups.push(pickup);
+    this.movables.push(pickup);
   }
 
   generateSingleDefencePickup(x, y) {
@@ -220,6 +276,53 @@ class Game {
       image: defencePickupImage,
     });
     this.defencePickups.push(pickup);
+    this.movables.push(pickup);
+  }
+
+  activatePickups(active) {
+    for (let pickup of this.strengthPickups) {
+      pickup.isActive = active;
+    }
+    for (let pickup of this.healthPickups) {
+      pickup.isActive = active;
+    }
+    for (let pickup of this.defencePickups) {
+      pickup.isActive = active;
+    }
+  }
+
+  updatePhysicsVelocity() {
+    moveables.forEach((moveable) => {
+      moveable.position.x += moveable.velocity.x;
+      moveable.position.y += moveable.velocity.y;
+    });
+  }
+
+  newEnemyRound() {
+    for (let enemy of this.enemies) {
+      enemy.isActive = true;
+      enemy.position.x = Math.random() * 840;
+      enemy.position.y = Math.random() * 120;
+    }
+  }
+
+  generateEnemies() {
+    for (let i = 0; i < totalAmountOfEnemies; i++) {
+      const enemy = new Enemy({
+        game: this,
+        position: {
+          x: Math.floor(Math.random() * 840),
+          y: Math.floor(Math.random() * 480),
+        },
+        image: enemyImage,
+        frames: {
+          max: 4,
+        },
+      });
+      this.enemies.push(enemy);
+      this.movables.push(enemy);
+      enemy.isActive = false;
+    }
   }
 
   clear() {
@@ -227,26 +330,56 @@ class Game {
   }
 
   draw() {
-    this.background.draw();
+    this.currentBackground.draw();
     this.player.draw();
     this.foreground.draw();
-    for (let pickup of this.strengthPickups) {
-      //console.log('HEY');
-      pickup.draw();
+    if (this.dayState === DayState.Day) {
+      for (let pickup of this.strengthPickups) {
+        if (pickup.isActive) {
+          pickup.draw();
+        }
+      }
+      for (let pickup of this.healthPickups) {
+        if (pickup.isActive) {
+          pickup.draw();
+        }
+      }
+      for (let pickup of this.defencePickups) {
+        if (pickup.isActive) {
+          pickup.draw();
+        }
+      }
+    } else if (this.dayState === DayState.Night) {
+      for (let enemy of this.enemies) {
+        enemy.draw();
+      }
     }
-    for (let pickup of this.healthPickups) {
-      //console.log('HEY');
-      pickup.draw();
-    }
-    for (let pickup of this.defencePickups) {
-      pickup.draw();
-    }
-    console.log(this.counter);
+
     this.drawAttributes();
+    this.player.draw();
+  }
+
+  switchToNight() {
     if (this.counter === 0) {
-      this.background = this.nightBackground;
-      this.background.draw();
-      this.player.draw();
+      this.currentBackground = this.nightBackground;
+      this.counter = this.nightTime * 120;
+      this.dayState = DayState.Night;
+      this.activatePickups(false);
+      this.newEnemyRound();
+      this.player.attackEnemy();
+    }
+  }
+
+  switchToDay() {
+    if (this.counter === 0) {
+      this.currentBackground = this.dayBackground;
+      this.counter = this.dayTime * 120;
+      this.dayState = DayState.Day;
+      this.activatePickups(true);
+      this.randomisePickupPositions();
+      for (let enemy of this.enemies) {
+        enemy.isActive = false;
+      }
     }
   }
 
@@ -254,12 +387,10 @@ class Game {
     const attributesBoard = new Image();
     attributesBoard.src = "assets/attributesBoard.png";
     this.context.drawImage(attributesBoard, 0, 0, 840, 480);
-    // this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
-    // this.context.fillRect(47, 10, 760, 45);
+
     this.context.font = "36px serif";
     this.context.fillStyle = "black";
-    // this.context.shadowColor = "black";
-    // this.context.shadowBlur = 1;
+
     this.context.fillText(
       `     HEALTH: ${this.health} - DEFENCE: ${this.defence} - STRENGTH: ${this.strength}`,
       5,
@@ -268,36 +399,25 @@ class Game {
     );
   }
 
-  drawNightCountdown() {
-    this.context.font = "36px serif";
-    this.context.fillStyle = "black";
-    this.context.fillText(`${this.nightCount}`, 20, 400, 840);
-  }
-
   drawDayCountdown() {
     this.context.font = "36px serif";
     this.context.fillStyle = "black";
     this.context.fillText(`${Math.floor(this.counter / 120)}`, 20, 400, 840);
   }
 
-  dayCountdown() {
-    if (this.dayCount !== 0) {
-      this.dayCount -= 1;
-    } else {
-      this.nightCount = 90;
-    }
-  }
-
-  nightCountdown() {
-    if (this.nightCount !== 0) {
-      this.nightCount -= 1;
-    } else {
-      this.dayCount = 30;
-    }
-  }
-
   update() {
-    this.counter--;
+    switch (this.dayState) {
+      case DayState.Day:
+        this.counter--;
+        this.switchToNight();
+        break;
+      case DayState.Night:
+        this.counter--;
+        this.switchToDay();
+        break;
+      default:
+      // code block
+    }
     this.clear();
     this.draw();
     this.boundaries.forEach((boundary) => {
@@ -308,29 +428,19 @@ class Game {
     this.player.pickupHealthPickups();
     this.player.pickupDefencePickups();
     this.drawDayCountdown();
-    // this.drawNightCountdown();
   }
 
   start() {
-    this.counter = 31 * 120;
+    this.counter = this.dayTime * 120;
     this.isRunning = true;
-    //this.strengthPickups = [];
     this.generateBoundaries();
-    this.generatePickups();
-    // this.addStrengthPickups();
-    // console.log(this.strengthPickups);
     this.runLogic();
+    this.generateEnemies();
+    this.generatePickups();
     this.enableControls();
     this.interval = setInterval(() => {
       // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
-    // setInterval(() => {
-    //   this.dayCountdown();
-    // }, 1000);
-    // setInterval(() => {
-    //   this.nightCountdown();
-    // }, 1000);
-    //window.requestAnimationFrame(timestamp => this.update(timestamp))
   }
 }
