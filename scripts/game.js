@@ -70,12 +70,18 @@ class Game {
 
     this.enemyHealth = 100;
 
-    this.dayTime = 3;
+    this.dayTime = 11;
     this.nightTime = 10;
 
     this.isRunning = false;
 
     this.dayState = DayState.Day;
+
+    this.minMapXLocation = -840;
+    this.maxMapXLocation = 1680;
+
+    this.minMapYLocation = -960;
+    this.maxMapYLocation = 120;
   }
 
   removeStrengthPickup(index) {
@@ -175,20 +181,38 @@ class Game {
 
   randomisePickupPositions() {
     for (let pickup of this.strengthPickups) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       pickup.position.x = x;
       pickup.position.y = y;
     }
     for (let pickup of this.healthPickups) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       pickup.position.x = x;
       pickup.position.y = y;
     }
     for (let pickup of this.defencePickups) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       pickup.position.x = x;
       pickup.position.y = y;
     }
@@ -196,18 +220,36 @@ class Game {
 
   generatePickups() {
     for (let i = 0; i < totalAmountOfPickups; i++) {
-      let x = Math.floor(Math.random() * 2501) - 1250;
-      let y = Math.random() * 350;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       this.generateSingleStrengthPickup(x, y);
     }
     for (let i = 0; i < totalAmountOfPickups; i++) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       this.generateSingleHealthPickup(x, y);
     }
     for (let i = 0; i < totalAmountOfPickups; i++) {
-      let x = Math.random() * 840;
-      let y = Math.random() * 480;
+      let x =
+        Math.floor(
+          Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+        ) + this.minMapXLocation;
+      let y =
+        Math.floor(
+          Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+        ) + this.minMapYLocation;
       this.generateSingleDefencePickup(x, y);
     }
   }

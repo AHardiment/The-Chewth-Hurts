@@ -256,9 +256,11 @@ class Player {
           },
         })
       ) {
-        if (!enemy.isActive) {
-          this.game.removeEnemies(i);
+        if (enemy.isActive) {
           this.game.enemyHealth -= 5;
+          if (this.game.enemyHealth === 0) {
+            this.game.removeEnemies(i);
+          }
           console.log(this.game.enemyHealth);
         }
       }

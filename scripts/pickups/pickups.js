@@ -1,4 +1,4 @@
-const totalAmountOfPickups = 10;
+const totalAmountOfPickups = 20;
 
 class Pickup {
   constructor({ game, position, image, frames = { max: 1 }, sprites }) {
