@@ -62,6 +62,42 @@ class Game {
     this.healthPickups = [];
     this.defencePickups = [];
 
+    this.daySong = document.createElement("audio");
+    this.daySong.src = "assets/music/mainTitleSong.mp3";
+    this.daySong.loop = true;
+    this.daySong.volume = 0.5;
+    this.daySong.setAttribute("preload", "auto");
+    this.daySong.setAttribute("controls", "none");
+    this.daySong.style.display = "none";
+    document.body.appendChild(this.daySong);
+
+    this.nightSong = document.createElement("audio");
+    this.nightSong.src = "assets/music/nightSong.mp3";
+    this.nightSong.loop = true;
+    this.nightSong.volume = 0.5;
+    this.nightSong.setAttribute("preload", "auto");
+    this.nightSong.setAttribute("controls", "none");
+    this.nightSong.style.display = "none";
+    document.body.appendChild(this.nightSong);
+
+    this.winningSong = document.createElement("audio");
+    this.winningSong.src = "assets/music/winningSound.mp3";
+    this.winningSong.loop = false;
+    this.winningSong.volume = 0.5;
+    this.winningSong.setAttribute("preload", "auto");
+    this.winningSong.setAttribute("controls", "none");
+    this.winningSong.style.display = "none";
+    document.body.appendChild(this.winningSong);
+
+    this.losingSong = document.createElement("audio");
+    this.losingSong.src = "assets/music/losingSound.mp3";
+    this.losingSong.loop = false;
+    this.losingSong.volume = 0.5;
+    this.losingSong.setAttribute("preload", "auto");
+    this.losingSong.setAttribute("controls", "none");
+    this.losingSong.style.display = "none";
+    document.body.appendChild(this.losingSong);
+
     this.enemies = [];
 
     this.strength = 0;
@@ -70,8 +106,10 @@ class Game {
 
     this.enemyHealth = 100;
 
-    this.dayTime = 11;
-    this.nightTime = 10;
+    this.dayTime = 31;
+    this.nightTime = 16;
+
+    this.dayNightCount = 0;
 
     this.isRunning = false;
 
@@ -82,6 +120,18 @@ class Game {
 
     this.minMapYLocation = -960;
     this.maxMapYLocation = 120;
+
+    this.randomXPosition =
+      Math.floor(
+        Math.random() * (this.maxMapXLocation - this.minMapXLocation + 1)
+      ) + this.minMapXLocation;
+
+    this.randomYPosition =
+      Math.floor(
+        Math.random() * (this.maxMapYLocation - this.minMapYLocation + 1)
+      ) + this.minMapYLocation;
+
+    this.gameOver = false;
   }
 
   removeStrengthPickup(index) {
@@ -254,12 +304,12 @@ class Game {
     }
   }
 
-  removeEnemies() {
-    for (let i = 0; i < totalAmountOfEnemies; i++) {
-      delete this.enemies[i];
-      this.movables.splice(4 + i, 1);
-    }
-  }
+  // removeEnemies() {
+  //   for (let i = 0; i < totalAmountOfEnemies; i++) {
+  //     delete this.enemies[i];
+  //     this.movables.splice(4 + i, 1);
+  //   }
+  // }
 
   removePickups() {
     for (let i = 0; i < totalAmountOfPickups; i++) {
@@ -367,6 +417,30 @@ class Game {
     }
   }
 
+  playDaySong() {
+    this.daySong.play();
+  }
+
+  playNightSong() {
+    this.nightSong.play();
+  }
+
+  pauseDaySong() {
+    this.daySong.pause();
+  }
+
+  pauseNightSong() {
+    this.nightSong.pause();
+  }
+
+  playWinningSong() {
+    this.winningSong.play();
+  }
+
+  playLosingSong() {
+    this.losingSong.play();
+  }
+
   clear() {
     this.context.clearRect(0, 0, this.width, this.height);
   }
@@ -391,9 +465,10 @@ class Game {
           pickup.draw();
         }
       }
-    } 
+    }
 
     this.drawAttributes();
+    this.drawTasks();
     this.player.draw();
   }
 
@@ -405,6 +480,10 @@ class Game {
       this.activatePickups(false);
       this.newEnemyRound();
       this.player.attackEnemy();
+      this.dayNightCount++;
+      console.log(this.dayNightCount);
+      this.pauseDaySong();
+      this.playNightSong();
     }
   }
 
@@ -418,6 +497,8 @@ class Game {
       for (let enemy of this.enemies) {
         enemy.isActive = false;
       }
+      this.pauseNightSong();
+      this.playDaySong();
     }
   }
 
@@ -435,6 +516,93 @@ class Game {
       59,
       840
     );
+  }
+
+  drawTasks() {
+    this.context.font = "36px serif";
+    this.context.fillStyle = "white";
+
+    this.context.fillRect(10, 362, 820, 55);
+
+    this.context.fillStyle = "black";
+    this.context.fillText(
+      `Quick, collect the items to increase your attributes!`,
+      80,
+      400,
+      840
+    );
+  }
+
+  decrementAttributes() {
+    if (
+      this.counter % 120 === 0 &&
+      this.dayState === DayState.Night &&
+      this.dayNightCount === 1
+    ) {
+      this.health -= 1;
+      this.defence -= 1;
+      this.strength -= 1;
+    } else if (
+      this.counter % 120 === 0 &&
+      this.dayState === DayState.Night &&
+      this.dayNightCount === 2
+    ) {
+      this.health -= 10;
+      this.defence -= 10;
+      this.strength -= 10;
+    } else if (
+      this.counter % 120 === 0 &&
+      this.dayState === DayState.Night &&
+      this.dayNightCount === 3
+    ) {
+      this.health -= 20;
+      this.defence -= 20;
+      this.strength -= 20;
+    }
+  }
+
+  checkForLoss() {
+    if (this.health <= 0 && this.strength <= 0 && this.defence <= 0) {
+      this.gameOver = true;
+    }
+  }
+
+  lose() {
+    if (this.gameOver) {
+      this.context.clearRect(0, 0, 840, 480);
+      this.context.font = "36px serif";
+      this.context.fillStyle = "white";
+      this.context.fillRect(0, 0, 840, 480);
+      this.context.fillStyle = "black";
+      this.context.fillText(
+        `GAME OVER`,
+        this.width / 2 - 120,
+        this.height / 2,
+        240
+      );
+      this.pauseDaySong();
+      this.pauseNightSong();
+      this.playLosingSong();
+    }
+  }
+
+  win() {
+    if (!this.gameOver && this.dayNightCount === 3) {
+      this.context.clearRect(0, 0, 840, 480);
+      this.context.font = "36px serif";
+      this.context.fillStyle = "white";
+      this.context.fillRect(0, 0, 840, 480);
+      this.context.fillStyle = "black";
+      this.context.fillText(
+        `YOU WIN`,
+        this.width / 2 - 120,
+        this.height / 2,
+        240
+      );
+      this.pauseDaySong();
+      this.pauseNightSong();
+      this.playWinningSong();
+    }
   }
 
   drawDayCountdown() {
@@ -466,9 +634,13 @@ class Game {
     this.player.pickupHealthPickups();
     this.player.pickupDefencePickups();
     this.drawDayCountdown();
+    this.decrementAttributes();
+    this.checkForLoss();
+    this.lose();
   }
 
   start() {
+    this.playDaySong();
     this.counter = this.dayTime * 120;
     this.isRunning = true;
     this.generateBoundaries();
