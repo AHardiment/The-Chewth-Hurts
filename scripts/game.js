@@ -391,11 +391,7 @@ class Game {
           pickup.draw();
         }
       }
-    } else if (this.dayState === DayState.Night) {
-      for (let enemy of this.enemies) {
-        enemy.draw();
-      }
-    }
+    } 
 
     this.drawAttributes();
     this.player.draw();

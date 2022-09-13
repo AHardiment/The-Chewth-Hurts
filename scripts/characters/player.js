@@ -194,6 +194,7 @@ class Player {
       }
     }
   }
+  
   pickupDefencePickups() {
     for (let i = 0; i < this.game.defencePickups.length; i++) {
       const pickup = this.game.defencePickups[i];
@@ -217,6 +218,7 @@ class Player {
       }
     }
   }
+
   pickupHealthPickups() {
     for (let i = 0; i < this.game.healthPickups.length; i++) {
       const pickup = this.game.healthPickups[i];
