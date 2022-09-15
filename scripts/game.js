@@ -108,10 +108,12 @@ class Game {
 
     this.enemyHealth = 100;
 
-    this.dayTime = 6;
-    this.nightTime = 6;
+    this.dayTime = 3;
+    this.nightTime = 3;
 
     this.dayNightCount = 0;
+
+    this.continueDecrementing = true;
 
     this.isRunning = false;
 
@@ -134,6 +136,8 @@ class Game {
       ) + this.minMapYLocation;
 
     this.gameOver = false;
+
+    this.reset();
   }
 
   removeStrengthPickup(index) {
@@ -475,7 +479,7 @@ class Game {
   }
 
   switchToNight() {
-    if (this.counter === 0) {
+    if (this.counter === 0 && !this.gameOver) {
       this.currentBackground = this.nightBackground;
       this.counter = this.nightTime * 120;
       this.dayState = DayState.Night;
@@ -490,7 +494,7 @@ class Game {
   }
 
   switchToDay() {
-    if (this.counter === 0) {
+    if (this.counter === 0 && !this.gameOver) {
       this.currentBackground = this.dayBackground;
       this.counter = this.dayTime * 120;
       this.dayState = DayState.Day;
@@ -569,10 +573,6 @@ class Game {
     }
   }
 
-  stopGame() {
-    this.gameOver = true;
-  }
-
   lose() {
     if (this.gameOver) {
       this.context.clearRect(0, 0, 840, 480);
@@ -586,6 +586,12 @@ class Game {
         this.height / 2,
         240
       );
+      this.context.fillText(
+        `You lasted ${this.dayNightCount - 1} days`,
+        this.width / 2 - 120,
+        this.height / 2 + 50,
+        240
+      );
       this.pauseDaySong();
       this.pauseNightSong();
       this.playLosingSong();
@@ -593,7 +599,7 @@ class Game {
   }
 
   win() {
-    if (!this.gameOver && this.dayNightCount === 3) {
+    if (!this.gameOver && this.dayNightCount >= 4) {
       this.context.clearRect(0, 0, 840, 480);
       this.context.font = "36px serif";
       this.context.fillStyle = "white";
@@ -643,10 +649,10 @@ class Game {
     this.decrementAttributes();
     this.checkForLoss();
     this.lose();
+    this.win();
   }
 
   start() {
-    this.playDaySong();
     this.counter = this.dayTime * 120;
     this.isRunning = true;
     this.generateBoundaries();
@@ -658,5 +664,26 @@ class Game {
       // this bit should be inside the update function
       this.update();
     }, 1000 / 120);
+    this.playDaySong();
+  }
+
+  reset() {
+    this.player = new Player({
+      game: this,
+      position: {
+        x: this.width / 2 - 192 / 4 / 2,
+        y: this.height / 2 - 68 / 2,
+      },
+      image: playerDownImage,
+      frames: {
+        max: 4,
+      },
+      sprites: {
+        up: playerUpImage,
+        left: playerLeftImage,
+        down: playerDownImage,
+        right: playerRightImage,
+      },
+    });
   }
 }

@@ -16,13 +16,29 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url("/assets/nik-shuliahin-JOzv_pAkcMk-unsplash.jpg");
+  background-image: url("/assets/james-homans-dd62HlRML9Y-unsplash.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 #main-title {
     margin: 0 auto;
+    text-align: center;
+}
+
+button {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font: inherit;
+  font-size: 2rem;
+  background: white;
+  border: 0;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: rgb(231, 231, 231);
 }
 
 #main-title h1 {

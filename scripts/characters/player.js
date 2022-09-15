@@ -189,7 +189,7 @@ class Player {
         if (pickup.isActive) {
           this.game.removeStrengthPickup(i);
           // this.game.player.strength += 1;}
-          this.game.strength += 5;
+          this.game.strength += 10;
         }
       }
     }
@@ -213,7 +213,7 @@ class Player {
         if (pickup.isActive) {
           this.game.removeDefencePickup(i);
           // this.game.player.strength += 1;}
-          this.game.defence += 5;
+          this.game.defence += 10;
         }
       }
     }
@@ -237,7 +237,7 @@ class Player {
         if (pickup.isActive) {
           this.game.removeHealthPickup(i);
           // this.game.player.strength += 1;}
-          this.game.health += 5;
+          this.game.health += 10;
         }
       }
     }

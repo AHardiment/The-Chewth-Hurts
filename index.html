@@ -15,11 +15,19 @@
   </head>
   <body>
     <div id="main-title">
-      <h1>THE GOOD KNIGHT</h1>
-      <button class="play-btn">PLAY!</button>
+      <h1>THE TALE OF THE MAN WHO BIT OFF MORE THAN HE COULD CHEW</h1>
     </div>
     <div>
-      <canvas width="840px" height="480px"></canvas>
+      <div id="start-screen" class="screen">
+        <button>Play Game</button>
+      </div>
+      <div id="game-screen" class="screen" style="display: none;">
+        <canvas width="840" height="480"></canvas>
+      </div>
+      <div id="game-over-screen" class="screen" style="display: none;">
+        <h2>Game Over</h2>
+        <button>Play Again</button>
+      </div>
     </div>
     <script src="./scripts/controls.js"></script>
     <script src="./scripts/collisions.js"></script>
