@@ -58,6 +58,8 @@ class Game {
       },
     });
 
+    this.playButton = document.querySelector(".play-btn");
+
     this.strengthPickups = [];
     this.healthPickups = [];
     this.defencePickups = [];
@@ -100,14 +102,14 @@ class Game {
 
     this.enemies = [];
 
-    this.strength = 0;
-    this.health = 100;
+    this.strength = 50;
+    this.health = 50;
     this.defence = 50;
 
     this.enemyHealth = 100;
 
-    this.dayTime = 31;
-    this.nightTime = 16;
+    this.dayTime = 6;
+    this.nightTime = 6;
 
     this.dayNightCount = 0;
 
@@ -565,6 +567,10 @@ class Game {
     if (this.health <= 0 && this.strength <= 0 && this.defence <= 0) {
       this.gameOver = true;
     }
+  }
+
+  stopGame() {
+    this.gameOver = true;
   }
 
   lose() {
