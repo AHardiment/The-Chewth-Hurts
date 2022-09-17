@@ -108,7 +108,7 @@ class Game {
 
     this.enemyHealth = 100;
 
-    this.dayTime = 7;
+    this.dayTime = 6;
     this.nightTime = 6;
 
     this.dayNightCount = 0;
@@ -495,6 +495,7 @@ class Game {
 
   switchToDay() {
     if (this.counter === 0 && !this.gameOver) {
+      this.dayTime = this.dayTime *= 1.5;
       this.currentBackground = this.dayBackground;
       this.counter = this.dayTime * 120;
       this.dayState = DayState.Day;
