@@ -4,9 +4,12 @@ const DayState = {
 };
 
 class Game {
-  constructor() {
+  constructor(gameScreenElement, gameOverScreenElement) {
     this.canvasElement = document.querySelector("canvas");
     this.context = this.canvasElement.getContext("2d");
+
+    this.gameScreenElement = gameScreenElement;
+    this.gameOverScreenElement = gameOverScreenElement;
 
     this.width = this.canvasElement.width;
     this.height = this.canvasElement.height;
@@ -447,6 +450,14 @@ class Game {
     this.losingSong.play();
   }
 
+  pauseWinningSong() {
+    this.winningSong.pause();
+  }
+
+  pauseLosingSong() {
+    this.losingSong.pause();
+  }
+
   clear() {
     this.context.clearRect(0, 0, this.width, this.height);
   }
@@ -596,6 +607,10 @@ class Game {
       this.pauseDaySong();
       this.pauseNightSong();
       this.playLosingSong();
+      setTimeout(() => {
+        this.gameScreenElement.style.display = "none";
+        this.gameOverScreenElement.style.display = "";
+      }, 5000);
     }
   }
 
