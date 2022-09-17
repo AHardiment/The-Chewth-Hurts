@@ -108,8 +108,8 @@ class Game {
 
     this.enemyHealth = 100;
 
-    this.dayTime = 3;
-    this.nightTime = 3;
+    this.dayTime = 7;
+    this.nightTime = 6;
 
     this.dayNightCount = 0;
 
