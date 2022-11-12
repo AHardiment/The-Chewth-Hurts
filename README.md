@@ -1,5 +1,5 @@
 # The Chewth Hurts
-Video game created with HTML Canvas, Vanilla JS and CSS.
+Video game created with the canvas API, HTML, Vanilla JS and CSS.
 
 Deployed live on - https://the-chewth-hurts.netlify.app/
 
